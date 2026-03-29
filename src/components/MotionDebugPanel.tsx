@@ -1,0 +1,45 @@
+import type { WebcamMotionController } from "../hooks/useWebcamMotion";
+
+const statusText: Record<string, string> = {
+  idle: "대기 중",
+  requesting: "권한 요청 중",
+  "camera-ready": "카메라 준비",
+  "loading-model": "포즈 모델 로딩",
+  ready: "인식 중",
+  error: "오류",
+  unsupported: "미지원",
+};
+
+export function MotionDebugPanel({
+  motion,
+  compact = false,
+}: {
+  motion: WebcamMotionController;
+  compact?: boolean;
+}) {
+  return (
+    <div className={`debug-panel ${compact ? "compact" : ""}`}>
+      <div className="debug-preview">
+        <video ref={motion.videoRef} muted playsInline />
+        <div className="debug-overlay">
+          <span>{statusText[motion.status] ?? motion.status}</span>
+          <span>{motion.snapshot.state}</span>
+        </div>
+      </div>
+      <div className="debug-stats">
+        <div className="debug-actions">
+          <button onClick={() => void motion.startCamera()}>웹캠 허용</button>
+          <button onClick={() => motion.stopCamera()}>중지</button>
+          <button onClick={() => motion.triggerSyntheticAttack("right")}>ꪨ의 타격</button>
+        </div>
+        <dl>
+          <div><dt>준비도</dt><dd>{Math.round(motion.snapshot.readyProgress * 100)}%</dd></div>
+          <div><dt>속도</dt><dd>{motion.snapshot.vector.speed.toFixed(2)}</dd></div>
+          <div><dt>이럙랑</dt><dd>{motion.snapshot.vector.distance.toFixed(3)}</dd></div>
+          <div><dt>방향</dt><dd>{motion.snapshot.vector.direction}</dd></div>
+          <div><dt>밝기</dt><dd>{motion.snapshot.brightness.toFixed(0)}</dd></div>
+          <div><dt>추론 ms</dt><dd>{motion.processingMs.toFixed(1)}</dd></div>
+        </dl>
+        {!compact ? (
+          <div className="debug-sliders">
+            <label>감도�zn�ܩz���颟N�k

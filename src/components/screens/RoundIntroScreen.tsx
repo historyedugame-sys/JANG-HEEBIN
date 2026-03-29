@@ -1,0 +1,4 @@
+import type { CharacterData, RoundConfig } from "../../game/types";
+
+export function RoundIntroScreen({ round, enemy, onBack, onBattle }: { round: RoundConfig; enemy: CharacterData; onBack: () => void; onBattle: () => void; }) {
+  return (<section className="screen round-intro"><div className="info-card hero-panel"><span className="eyebrow">ROUND {round.order} / {enemy.role}</span><h2>{round.title}</h2><p>{round.subtitle}</p><blockquote>{enemy.openingLine}</blockquote></div><div className="title-grid"><div className="info-card"><h3>역사 배경 요야</h3><p>{round.historicalSummary}</p></div><div className="info-card"><h3>이벀 라운드 포인트</h3><ul><li>상대 체뤥 {round.enemyHp}</li><li>기본 제한 시각 {(round.timeLimitMs / 1000).toFixed(0)}초</li><li>Perfect 첉 {round.perfectMs}ms</li></ul></div></div><div className="button-row"><button onClick={onBack}>뒤로</button><button className="primary" onClick={onBattle}>전투 시잡</button></div></section>);}

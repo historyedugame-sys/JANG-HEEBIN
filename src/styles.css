@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Press+Start+2P&display=swap");
+
+:root {
+  --bg-deep: #120b12;
+  --ink: #24151c;
+  --wine: #7f1734;
+  --royal: #1f325c;
+  --gold: #d5a84a;
+  --jade: #3f7a67;
+  --paper: #f2e6cf;
+  --rose: #d85b7a;
+  --soft: rgba(255, 245, 225, 0.78);
+  --panel: rgba(18, 11, 18, 0.76);
+  color: var(--paper);
+  font-family: "IBM Plex Sans KR", sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(149, 43, 77, 0.24), transparent 30%),
+    linear-gradient(180deg, #140b16 0%, #0a0710 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(127, 23, 52, 0.4), transparent 32%),
+    radial-gradient(circle at 80% 0%, rgba(31, 50, 92, 0.55), transparent 30%),
+    linear-gradient(180deg, #150d19, #06050a);
+}
+
+button {
+  border: 1px solid rgba(213, 168, 74, 0.4);
+  background: linear-gradient(180deg, rgba(127, 23, 52, 0.9), rgba(56, 10, 24, 0.95));
+  color: var(--paper);
+  padding: 0.9rem 1.2rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(216, 91, 122, 0.18);
+}
+
+button.primary {
+  background: linear-gradient(180deg, rgba(213, 168, 74, 0.94), rgba(127, 23, 52, 0.92));
+}

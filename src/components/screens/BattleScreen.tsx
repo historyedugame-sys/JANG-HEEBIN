@@ -1,0 +1,16 @@
+import { useEffect } from "react";
+import { BattleHud } from "../BattleHud";
+import { CharacterPortrait } from "../CharacterPortrait";
+import { MotionDebugPanel } from "../MotionDebugPanel";
+import { PalaceBackdrop } from "../PalaceBackdrop";
+import { TimingRail } from "../TimingRail";
+import { useBattleEngine } from "../../game/useBattleEngine";
+import type { BattleResult, CharacterData, DifficultyPreset, RoundConfig } from "../../game/types";
+import type { WebcamMotionController } from "../../hooks/useWebcamMotion";
+
+export function BattleScreen({ round, player, enemy, difficulty, motion, onExit, onResolved, onPlayJudge }: { round: RoundConfig; player: CharacterData; enemy: CharacterData; difficulty: DifficultyPreset; motion: WebcamMotionController; onExit: () => void; onResolved: (result: BattleResult) => void; onPlayJudge: (grade: "miss" | "good" | "perfect" | "guarded" | "counter") => void }) {
+  const battle = useBattleEngine(round, difficulty, motion.lastAttackEvent);
+  useEffect(() => { const onKeyDown = (event: KeyboardEvent) => { if (event.code === "Space") { event.preventDefault(); motion.triggerSyntheticAttack("right"); } }; window.addEventListener("keydown", onKeyDown); return () => window.removeEventListener("keydown", onKeyDown); }, [motion]);
+  useEffect(() => { if (battle.feedbackTick === 0) return; if (battle.lastJudge === "perfect") onPlayJudge("perfect"); else if (battle.lastJudge === "good") onPlayJudge("good"); else if (battle.lastJudge === "guarded") onPlayJudge("guarded"); else onPlayJudge("counter"); }, [battle.feedbackTick, battle.lastJudge, onPlayJudge]);
+  return (<section className="screen battle-screen"><PalaceBackdrop theme={round.arenaTheme} /><BattleHud roundTitle={round.title} subtitle={round.subtitle} playerHp={battle.playerHp} playerMaxHp={battle.playerMaxHp} enemyHp={battle.enemyHp} enemyMaxHp={battle.enemyMaxHp} combo={battle.combo} finesse={battle.finesse} timeLeftMs={battle.timeLeftMs} judge={battle.lastJudge} /><div className="battle-stage"><CharacterPortrait character={player} side="left" reaction={battle.lastJudge === "too-early" || battle.lastJudge === "too-late" ? "counter" : "idle"} hpRatio={battle.playerHp / battle.playerMaxHp} /><div className="battle-middle"><TimingRail cue={battle.currentCue} phase={battle.phase} phaseElapsedMs={battle.phaseElapsedMs} phaseDurationMs={battle.phaseDurationMs} /><div className="dialogue-ribbon"><span>{battle.message}</span><small>{motion.status === "ready" ? "준비 자세를 만들고 손을 휜두러세요." : "웹캠 준비가 안 되면 모의 타격 버튼이나 스페이스바로 데모할 수 있습니다."}</small></div></div><CharacterPortrait character={enemy} side="right" reaction={battle.enemyReaction}(hpRatio={battle.enemyHp / battle.enemyMaxHp} /></div><div className="battle-bottom"><MotionDebugPanel motion={motion} compact /><div className="button-row"><button onClick={onExit}>전투 중싨</button><button onClick={() => motion.triggerSyntheticAttack("right")}>ꪩ은 타견</button></div></div>{battle.result ? (<div className="result-overlay"><div className="info-card"><span className="eyebrow">{battle.result.outcome === "victory" ? "승리" : "패배"}</span><h3>{battle.result.summary}</h3><button className="primary" onClick={() => onResolved(battle.result!)}>경쪼 화헤'>  </button></div></div>) : null}</section>);
+}
